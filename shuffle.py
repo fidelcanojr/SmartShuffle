@@ -1,11 +1,15 @@
 import spotipy as sp
 import spotipy.util as util
+import time
 import random
 import os
+from shuffleUtils import get_flagged_tracks
 
 CLIENT_ID=os.environ['SPOTIFY_SMART_SHUFFLE_CLIENT_ID']
 CLIENT_SECRET=os.environ['SPOTIFY_SMART_SHUFFLE_CLIENT_SECRET']
-scope='streaming user-read-email user-modify-playback-state playlist-read-private'
+scope='streaming user-read-email user-modify-playback-state \
+playlist-read-private playlist-modify-public playlist-modify-private \
+user-read-playback-state'
 token = util.prompt_for_user_token(
     'fidelcanojr',
     scope,
@@ -23,24 +27,14 @@ for playlist in playlists:
     if (playlist['name']=='Smart Shuffle'):
         smart_shuffle_id = playlist['id']
 
-forbidden_fruit = {'4nwKdZID1ht0lDBJ5h2p87','4JOyMhad5dD81uGYLGgKrS'
-    '1FTCA6wQwulQFokDddKE68', '2jtUGFsqanQ82zqDlhiKIp', '01SfTM5nfCou5gQL70r6gs',
-    '5eZrW59C3UgBhkqNlowEID', '5aHHf6jrqDRb1fcBmue2kn', '6UCFZ9ZOFRxK8oak7MdPZu'
-}
-current_to_next_map = {
-    '1jOLTO379yIu9aMnCkpMQl': '4nwKdZID1ht0lDBJ5h2p87',
-    '4nwKdZID1ht0lDBJ5h2p87': '4JOyMhad5dD81uGYLGgKrS',
-    '4JOyMhad5dD81uGYLGgKrS': '1FTCA6wQwulQFokDddKE68',
-    '1FTCA6wQwulQFokDddKE68': '2jtUGFsqanQ82zqDlhiKIp',
-    '2jtUGFsqanQ82zqDlhiKIp': '01SfTM5nfCou5gQL70r6gs',
-    '01SfTM5nfCou5gQL70r6gs': '5eZrW59C3UgBhkqNlowEID',
-    '5eZrW59C3UgBhkqNlowEID': '5aHHf6jrqDRb1fcBmue2kn',
-    '5aHHf6jrqDRb1fcBmue2kn': '6UCFZ9ZOFRxK8oak7MdPZu'
-}
+forbidden_fruit, current_to_next_map = get_flagged_tracks()
 
-current_track_context = spotify_client.current_user_playing_track()['context']
+#Get information about the track that's currently playing
+track_info = spotify_client.current_user_playing_track()
+current_track_context = track_info['context']
+
+#Collect the tracks in the playlist or album that is playing
 track_ids = []
-shuffled_ids = []
 if current_track_context['type'] == 'playlist':
     playlist = spotify_client.user_playlist(my_id, playlist_id=current_track_context['uri'])['tracks']['items']
     for track in playlist:
@@ -49,11 +43,36 @@ elif current_track_context['type'] == 'album':
     album = spotify_client.album_tracks(current_track_context['uri'])
     for track in album['items']:
         track_ids.append(track['id'])
-print(track_ids)
-while len(track_ids) != 0:
-    track = random.choice()#lm -> lm(poop~chicken+gravy, data = thanksgiving, method = "anova"))
 
+#Add the first song to the track along with any chain it may begin
+track = track_info['item']['id']
+if track in forbidden_fruit:
+    raise Exception("This track is part of a sequence. Please select another track from where to start shuffling.")
+track_ids.remove(track)
+shuffled_ids = [track]
+while True:
+    try:
+        track = current_to_next_map[track]
+        track_ids.remove(track)
+        shuffled_ids.append(track)
+    except KeyError:
+        break
+
+#Add the remaining songs
+while len(track_ids) != 0:
+    track = random.choice(track_ids)
+    if track not in forbidden_fruit:
+        track_ids.remove(track)
+        shuffled_ids.append(track)
+        while True:
+            try:
+                track = current_to_next_map[track]
+                track_ids.remove(track)
+                shuffled_ids.append(track)
+            except KeyError:
+                break
 
 spotify_client.shuffle(False)
-# spotify_cleint.user_playlist_replace_tracks(my_id, smart_shuffle_id)
-# spotify_client.start_playback(context_uri='spotify:album:7gsWAHLeT0w7es6FofOXk1')
+spotify_client.user_playlist_replace_tracks(my_id, smart_shuffle_id, shuffled_ids)
+time.sleep(2)
+spotify_client.start_playback(context_uri='spotify:user:'+my_id+':playlist:'+smart_shuffle_id)
