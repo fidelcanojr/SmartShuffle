@@ -11,7 +11,7 @@ scope='streaming user-read-email user-modify-playback-state \
 playlist-read-private playlist-modify-public playlist-modify-private \
 user-read-playback-state'
 token = util.prompt_for_user_token(
-    'fidelcanojr',
+    os.environ['SPOTIFY_SMART_SHUFFLE_USERNAME'],
     scope,
     client_id = CLIENT_ID,
     client_secret = CLIENT_SECRET,

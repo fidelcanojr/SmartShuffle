@@ -4,12 +4,18 @@ This application shuffles any Spotify album or playlist while retaining the orde
 
 ### First Things First, Authorization!
 
-Get the client id and secret from the [Spotify developer console](https://developer.spotify.com/dashboard).
+Register the app and get a client id and secret from the [Spotify developer console](https://developer.spotify.com/dashboard).
 Go into this repository and stick the credentials as environment variables by running the following commands:
 
 ```
 export SPOTIFY_SMART_SHUFFLE_CLIENT_ID=<CLIENT_ID>
 export SPOTIFY_SMART_SHUFFLE_CLIENT_SECRET=<CLIENT_SECRET>
+```
+
+You will also have to stick your Spotify username into your environment variables by running the following command:
+
+```
+export SPOTIFY_SMART_SHUFFLE_USERNAME=<USERNAME>
 ```
 
 ### Shuffling a Playlist or Album
