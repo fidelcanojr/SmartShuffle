@@ -35,3 +35,16 @@ If you want to flag a pair of songs as being in a sequence (namely song with id 
 To find a song's id, navigate to the song in Spotify. One of the `Share` options is `Copy Spotify URI`. This URI will be of the form:
 
 `spotify:track:<SONG_ID>`
+
+The following songs are already flagged as sequential when you clone this repository:
+
+* `You Never Give Me Your Money` is followed by `Sun King`, both by `The Beatles`
+* `Sun King` is followed by `Mean Mr. Mustard`, both by `The Beatles`
+* `Mean Mr. Mustard` is followed by `Polythene Pam`, both by `The Beatles`
+* `Polythene Pam` is followed by `She Came In Through The Bathroom Window`, both by `The Beatles`
+* `She Came In Through The Bathroom Window` is followed by `Golden Slumbers`, both by `The Beatles`
+* `Golden Slumbers` is followed by `Carry That Weight`, both by `The Beatles`
+* `Carry That Weight` is followed by `The End`, both by `The Beatles`
+* `Sgt. Pepper's Lonely Hearts Club Band` is followed by `With a Little Help From My Friends`, both by `The Beatles`
+* `A Savior in the Square` is followed by `When Your Time has Come`, both by `Dream Theater`
+* `Helpless` is followed by `Satisfied`, both from the `Hamilton Original Broadway Cast Soundtrack`
