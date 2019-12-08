@@ -4,7 +4,7 @@ This application shuffles any Spotify album or playlist while retaining the orde
 
 ### First Things First, Authorization!
 
-Register the app and get a client id and secret from the [Spotify developer console](https://developer.spotify.com/dashboard).
+[Register the app with a redirect URL](https://developer.spotify.com/documentation/general/guides/app-settings/) or get a client id and secret from the [Spotify developer console](https://developer.spotify.com/dashboard). The redirect URL should be `https://www.spotify.com/us/`.
 Go into this repository and stick the credentials as environment variables by running the following commands:
 
 ```
