@@ -26,6 +26,17 @@ playlists = spotify_client.user_playlists(my_id)['items']
 for playlist in playlists:
     if (playlist['name']=='Smart Shuffle'):
         smart_shuffle_id = playlist['id']
+if not smart_shuffle_id:
+    smart_shuffle_playlist = spotify_client.user_playlist_create(
+        my_id,
+        "Smart Shuffle",
+        public=False,
+        description="Temporary playlist that gets updated whenever I want to do a smart shuffle. \
+        The smart shuffle app will grab whatever collection of songs I'm listening to, and put \
+        them into this playlist, in 'smart' order."
+    )
+    smart_shuffle_id = smart_shuffle_playlist['uri'].split(':')[-1]
+
 
 forbidden_fruit, current_to_next_map = get_flagged_tracks()
 
